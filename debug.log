@@ -1,0 +1,2 @@
+[0520/212353.670:ERROR:process_reader_win.cc(123)] NtOpenThread: {Acceso denegado} Un proceso ha solicitado acceso a un objeto, pero no se le han concedido esos derechos de acceso. (0xc0000022)
+[0520/212353.779:ERROR:exception_snapshot_win.cc(98)] thread ID 20396 not found in process
