@@ -37,27 +37,61 @@ def getItemInfo(url):
         info['size'] = "null"
 
     #Find sku
-    sku = browser.find_elements_by_xpath("//div[@class='sku_wrapper']/span")[0].text
-    info['sku'] = sku
+    sku = browser.find_elements_by_xpath("//div[@class='sku_wrapper']/span")
+    if len(sku) > 0:
+        info['sku'] = sku[0].text
+    else:
+        info['sku'] = 'null'
 
     #Find description
-    description = browser.find_elements_by_xpath("//div[@id='tab-description']/p")[0].text
-    info['description'] = description
+    description = browser.find_elements_by_xpath("//div[@id='tab-description']/p")
+    if len(description) > 0:
+        info['description'] = description[0].text
+    else:
+        info['description'] = 'null'
 
-    #find image img_url
-    img_url = browser.find_elements_by_xpath("//div[@class='content-area']/div/div[2]/div[1]/div/a/img")[0]
-    info['img_url'] = img_url.get_attribute('src')
+    #find image url
+    img_url = browser.find_elements_by_xpath("//div[@class='content-area']/div/div[2]/div[1]/div/a/img")
+    if len(img_url) > 0:
+        info['img_url'] = img_url[0].get_attribute('src')
+    else:
+        info['img_url'] = 'null'
 
     return info
 
+def getItemsInformation(urls):
+    items = {
+        "name":[],
+        "sku":[],
+        "size":[],
+        "description":[],
+        "img_url":[],
+    }
+
+    for i in urls:
+        item = getItemInfo(i)
+        items['name'].append(item['name'])
+        items['sku'].append(item['sku'])
+        items['size'].append(item['size'])
+        items['description'].append(item['description'])
+        items['img_url'].append(item['img_url'])
+
+    return items
+
+def exportData(items):
+
+
 def main():
-    #items_url = getItemsUrl(2)
+    #Number of pages
+    n = 1
+    items_url = getItemsUrl(n)
 
-    itemInfo = getItemInfo("https://www.eurosupermercados.com/tienda/zumo-uva-2lt-light-menal/")
-    print(itemInfo)
+    #Get all the products information
+    itemsDictionary = getItemsInformation(items_url)
 
-    #for i in range(len(items_url)):
-        #print("item #" + str(i+1) + " " + items_url[i])
+    #Export Information
+    name_file = "prodcuts_test"
+    exportData(itemsDictionary)
 
     browser.quit()
 main()
