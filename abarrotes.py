@@ -123,4 +123,6 @@ def main():
     exportData(itemsDictionary, name_file)
 
     browser.quit()
+
+    print("¡Terminado!")
 main()
