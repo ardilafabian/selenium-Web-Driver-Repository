@@ -6,7 +6,12 @@ browser = webdriver.Chrome("C:\\Users\\laura.borda\\Desktop\\exporting_files\\so
 
 def getItemsUrl(numPages, url_privided):
     j=1
-    url = url_privided + "/page/"
+
+    if url_privided[-1] == "/":
+        url = url_privided + "page/"
+    else:
+        url = url_privided + "/page/"
+
     items_urls = []
     while j <= numPages:
         browser.get(url + str(j) + "/")
@@ -103,6 +108,9 @@ def main():
     #Ask number of pages to the User
     n = int(input("Ingresa numero de paginas:\n").strip())
 
+    #Ask name of the file to be exported
+    name_file = input("Ingresa el nombre del archivo a exportar:\n").strip()
+
     #Number of pages
     items_url = getItemsUrl(n, url)
     #print(items_url)
@@ -112,10 +120,6 @@ def main():
     #print(itemsDictionary)
 
     #Export Information (specify name)
-    name_file = "items_test"
-    #Cars = {'Brand': ['Honda Civic','Toyota Corolla','Ford Focus','Audi A4'],
-    #    'Price': [32000,35000,37000,45000]
-    #    }
     exportData(itemsDictionary, name_file)
 
     browser.quit()
