@@ -78,20 +78,40 @@ def getItemsInformation(urls):
 
     return items
 
-def exportData(items):
+def exportData(items, name_file):
+    df = DataFrame(items, columns= ['name', 'sku', 'size', 'description', 'img_url'])
 
+    #path = 'C:\\Users\\Fabian Ardila\\Desktop\\' + name_file + 'xlsx'
+
+    export_excel = df.to_excel(r'C:\\Users\\Fabian Ardila\\Desktop\\' + name_file + '.xlsx', index=None, header=True)
+
+    print(df)
+
+def exportDataPrueba(items, name_file):
+    df = DataFrame(items, columns= ['Brand', 'Price'])
+
+    #path = 'C:\\Users\\Fabian Ardila\\Desktop\\' + name_file + 'xlsx'
+
+    export_excel = df.to_excel(r'C:\\Users\\Fabian Ardila\\Desktop\\' + name_file + '.xlsx', index=False, header=True)
+
+    #print(df)
 
 def main():
     #Number of pages
     n = 1
     items_url = getItemsUrl(n)
+    #print(items_url)
 
     #Get all the products information
     itemsDictionary = getItemsInformation(items_url)
+    #print(itemsDictionary)
 
-    #Export Information
-    name_file = "prodcuts_test"
-    exportData(itemsDictionary)
+    #Export Information (specify name)
+    name_file = "items_test"
+    #Cars = {'Brand': ['Honda Civic','Toyota Corolla','Ford Focus','Audi A4'],
+    #    'Price': [32000,35000,37000,45000]
+    #    }
+    exportData(itemsDictionary, name_file)
 
     browser.quit()
 main()
