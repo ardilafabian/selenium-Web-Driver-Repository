@@ -2,11 +2,11 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from pandas import DataFrame
 
-browser = webdriver.Chrome("C:\\Users\\Fabian Ardila\\Desktop\\chromedriver.exe")
+browser = webdriver.Chrome("C:\\Users\\laura.borda\\Desktop\\exporting_files\\software\\executables\\chromedriver_win32\\chromedriver.exe")
 
-def getItemsUrl(numPages):
+def getItemsUrl(numPages, url_privided):
     j=1
-    url = "https://www.eurosupermercados.com/categoria-de-producto/abarrotes/page/"
+    url = url_privided + "/page/"
     items_urls = []
     while j <= numPages:
         browser.get(url + str(j) + "/")
@@ -83,7 +83,7 @@ def exportData(items, name_file):
 
     #path = 'C:\\Users\\Fabian Ardila\\Desktop\\' + name_file + 'xlsx'
 
-    export_excel = df.to_excel(r'C:\\Users\\Fabian Ardila\\Desktop\\' + name_file + '.xlsx', index=None, header=True)
+    export_excel = df.to_excel(r'C:\\Users\\laura.borda\\Desktop\\exporting_files\\files\\' + name_file + '.xlsx', index=None, header=True)
 
     print(df)
 
@@ -92,14 +92,19 @@ def exportDataPrueba(items, name_file):
 
     #path = 'C:\\Users\\Fabian Ardila\\Desktop\\' + name_file + 'xlsx'
 
-    export_excel = df.to_excel(r'C:\\Users\\Fabian Ardila\\Desktop\\' + name_file + '.xlsx', index=False, header=True)
+    export_excel = df.to_excel(r'C:\\Users\\laura.borda\\Desktop\\exporting_files\\files\\' + name_file + '.xlsx', index=False, header=True)
 
     #print(df)
 
 def main():
+    #Ask URL to the User
+    url = input("Ingresa la URL:\n").strip()
+
+    #Ask number of pages to the User
+    n = int(input("Ingresa numero de paginas:\n").strip())
+
     #Number of pages
-    n = 1
-    items_url = getItemsUrl(n)
+    items_url = getItemsUrl(n, url)
     #print(items_url)
 
     #Get all the products information
