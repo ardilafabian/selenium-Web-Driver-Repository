@@ -3,15 +3,14 @@ from selenium.webdriver.common.by import By
 from pandas import DataFrame
 
 browser = webdriver.Chrome(".\\executables\\chromedriver_win32\\chromedriver.exe")
-#browser = webdriver.Chrome("C:\\Users\\laura.borda\\Desktop\\exporting_files\\software\\executables\\chromedriver_win32\\chromedriver.exe")
 
-def getItemsUrl(numPages, url_privided):
+def getItemsUrl(numPages, url_provided):
     j=1
 
-    if url_privided[-1] == "/":
-        url = url_privided + "page/"
+    if url_provided[-1] == "/":
+        url = url_provided + "page/"
     else:
-        url = url_privided + "/page/"
+        url = url_provided + "/page/"
 
     items_urls = []
     while j <= numPages:
@@ -87,22 +86,9 @@ def getItemsInformation(urls):
 def exportData(items, name_file):
     df = DataFrame(items, columns= ['name', 'sku', 'size', 'description', 'img_url'])
 
-    #path = 'C:\\Users\\Fabian Ardila\\Desktop\\' + name_file + 'xlsx'
-
-    #export_excel = df.to_excel(r'C:\\Users\\laura.borda\\Desktop\\exporting_files\\files\\' + name_file + '.xlsx', index=None, header=True)
-
     export_excel = df.to_excel(r'.\\exported_files\\' + name_file + '.xlsx', index=None, header=True)
 
     print(df)
-
-def exportDataPrueba(items, name_file):
-    df = DataFrame(items, columns= ['Brand', 'Price'])
-
-    #path = 'C:\\Users\\Fabian Ardila\\Desktop\\' + name_file + 'xlsx'
-
-    export_excel = df.to_excel(r'C:\\Users\\laura.borda\\Desktop\\exporting_files\\files\\' + name_file + '.xlsx', index=False, header=True)
-
-    #print(df)
 
 def main():
     #Ask URL to the User
@@ -116,11 +102,9 @@ def main():
 
     #Number of pages
     items_url = getItemsUrl(n, url)
-    #print(items_url)
 
     #Get all the products information
     itemsDictionary = getItemsInformation(items_url)
-    #print(itemsDictionary)
 
     #Export Information (specify name)
     exportData(itemsDictionary, name_file)
