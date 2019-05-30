@@ -1,3 +1,4 @@
+from sys import stdin
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from pandas import DataFrame
@@ -90,36 +91,50 @@ def exportProductsData(items, name_file):
 
     print(df)
 
+def printMenu():
+    print("\nMenu:")
+    print("\r1. Descargar info de productos de link de la pagina 'Euro Supermercados'")
+    print("\r2. Descargar URLs de imagenes de una lista de codigos")
+    print("\r0. Salir")
+
+def startProcessChoiseOne():
+    """Ask URL to the User"""
+    url = input("\nIngresa la URL:\n").strip()
+
+    """Ask number of pages to the User"""
+    n = int(input("Ingresa numero de paginas:\n").strip())
+
+    """Ask name of the file to be exported"""
+    name_file = input("Ingresa el nombre del archivo a exportar:\n").strip()
+
+    """Number of pages"""
+    items_url = getItemsUrl(n, url)
+
+    """Get all the products information"""
+    itemsDictionary = getItemsInformation(items_url)
+
+    """Export Information (specify name)"""
+    exportProductsData(itemsDictionary, name_file)
+
+def startProcessChoiseTwo():
+    print("Ingresa la lista de códigos:\n")
+    code = stdin.readline().strip()
+    while code != "":
+        
+        phoneNumber = stdin.readline().strip()
+
 def main():
     """Show menu"""
     choise = -1
     while choise != 0:
-        print("\nMenu:")
-        print("\r1. Descargar info de productos de link de la pagina 'Euro Supermercados'")
-        print("\r2. Descargar URLs de imagenes de una lista de codigos")
-        print("\r0. Salir")
+        printMenu()
+
         choise = int(input("\nElige la opción: ").strip())
 
         if choise == 1:
-            """Ask URL to the User"""
-            url = input("\nIngresa la URL:\n").strip()
-
-            """Ask number of pages to the User"""
-            n = int(input("Ingresa numero de paginas:\n").strip())
-
-            """Ask name of the file to be exported"""
-            name_file = input("Ingresa el nombre del archivo a exportar:\n").strip()
-
-            """Number of pages"""
-            items_url = getItemsUrl(n, url)
-
-            """Get all the products information"""
-            itemsDictionary = getItemsInformation(items_url)
-
-            """Export Information (specify name)"""
-            exportProductsData(itemsDictionary, name_file)
-        #else if choise == 2:
-
+            startProcessChoiseOne()
+        else if choise == 2:
+            startProcessChoiseTwo()
 
     browser.quit()
 
