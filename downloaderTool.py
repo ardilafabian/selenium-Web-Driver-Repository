@@ -31,7 +31,7 @@ def getItemInfo(url):
         "img_url":"",
     }
 
-    #Validate Name if have size in it
+    """Validate Name if have size in it"""
     name = browser.find_elements_by_xpath("//div[@class='content-area']/div/div[2]/div[2]/h1")[0].text
     res = name.find("*")
     if res != -1:
@@ -41,21 +41,21 @@ def getItemInfo(url):
         info['name'] = name
         info['size'] = "null"
 
-    #Find sku
+    """Find sku"""
     sku = browser.find_elements_by_xpath("//div[@class='sku_wrapper']/span")
     if len(sku) > 0:
         info['sku'] = sku[0].text
     else:
         info['sku'] = 'null'
 
-    #Find description
+    """Find description"""
     description = browser.find_elements_by_xpath("//div[@id='tab-description']/p")
     if len(description) > 0:
         info['description'] = description[0].text
     else:
         info['description'] = 'null'
 
-    #find image url
+    """find image url"""
     img_url = browser.find_elements_by_xpath("//div[@class='content-area']/div/div[2]/div[1]/div/a/img")
     if len(img_url) > 0:
         info['img_url'] = img_url[0].get_attribute('src')
@@ -91,22 +91,31 @@ def exportData(items, name_file):
     print(df)
 
 def main():
-    #Ask URL to the User
+    """Show menu"""
+    choise = -1
+    while choise != 0:
+        print("Menu:")
+        print("\r1. Descargar info de productos de link de la pagina 'Euro Supermercados'")
+        print("\r2. Descargar URLs de imagenes de una lista de codigos")
+        print("\r0. Salir")
+        choise = int(input("\nElige la opción: ").strip())
+
+    """Ask URL to the User"""
     url = input("Ingresa la URL:\n").strip()
 
-    #Ask number of pages to the User
+    """Ask number of pages to the User"""
     n = int(input("Ingresa numero de paginas:\n").strip())
 
-    #Ask name of the file to be exported
+    """Ask name of the file to be exported"""
     name_file = input("Ingresa el nombre del archivo a exportar:\n").strip()
 
-    #Number of pages
+    """Number of pages"""
     items_url = getItemsUrl(n, url)
 
-    #Get all the products information
+    """Get all the products information"""
     itemsDictionary = getItemsInformation(items_url)
 
-    #Export Information (specify name)
+    """Export Information (specify name)"""
     exportData(itemsDictionary, name_file)
 
     browser.quit()
