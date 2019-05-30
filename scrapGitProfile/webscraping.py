@@ -8,3 +8,4 @@ option = webdriver.ChromeOptions()
 option.add_argument(" — incognito")
 
 browser = webdriver.Chrome(executable_path="C:\\Users\\Fabian Ardila\\Desktop\\chromedriver.exe", chrome_options=option)
+browser.get("https://github.com/TheDancerCodes")

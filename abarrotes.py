@@ -2,7 +2,8 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from pandas import DataFrame
 
-browser = webdriver.Chrome("C:\\Users\\laura.borda\\Desktop\\exporting_files\\software\\executables\\chromedriver_win32\\chromedriver.exe")
+browser = webdriver.Chrome(".\\executables\\chromedriver_win32\\chromedriver.exe")
+#browser = webdriver.Chrome("C:\\Users\\laura.borda\\Desktop\\exporting_files\\software\\executables\\chromedriver_win32\\chromedriver.exe")
 
 def getItemsUrl(numPages, url_privided):
     j=1
@@ -88,7 +89,9 @@ def exportData(items, name_file):
 
     #path = 'C:\\Users\\Fabian Ardila\\Desktop\\' + name_file + 'xlsx'
 
-    export_excel = df.to_excel(r'C:\\Users\\laura.borda\\Desktop\\exporting_files\\files\\' + name_file + '.xlsx', index=None, header=True)
+    #export_excel = df.to_excel(r'C:\\Users\\laura.borda\\Desktop\\exporting_files\\files\\' + name_file + '.xlsx', index=None, header=True)
+
+    export_excel = df.to_excel(r'.\\exported_files\\' + name_file + '.xlsx', index=None, header=True)
 
     print(df)
 
