@@ -91,21 +91,46 @@ def exportProductsData(items, name_file):
 
     print(df)
 
+def getImageURL(code):
+    res = ""
+
+    searchBar = browser.find_element_by_name("q")
+    searchBar.send_keys(code)
+    searchBar.submit()
+
+    linkToImage = browser.find_elements_by_xpath("//div[@data-ri='0']/div")
+    if len(linkToImage) > 0:
+        linkToImage = linkToImage[0].get_attribute('class')
+        print("JSON meta image -> " + linkToImage)
+    else:
+        res = "null"
+
+    return res
+
+def getCodeImages(codes):
+    imagesData = {
+        "code" : [],
+        "image_url" : [],
+    }
+
+    for c in codes:
+        imagesData['code'] = c
+        imagesData['image_url'].append(getImageURL(c))
+
+    return imagesData
+
 def printMenu():
-    print("\nMenu:")
-    print("\r1. Descargar info de productos de link de la pagina 'Euro Supermercados'")
-    print("\r2. Descargar URLs de imagenes de una lista de codigos")
+    print("\nMenú:")
+    print("\r1. Descargar info de productos de link de la página 'Euro Supermercados'")
+    print("\r2. Descargar URLs de imagenes de una lista de códigos")
     print("\r0. Salir")
 
-def startProcessChoiseOne():
+def startProcessChoiceOne(name_file):
     """Ask URL to the User"""
     url = input("\nIngresa la URL:\n").strip()
 
     """Ask number of pages to the User"""
     n = int(input("Ingresa numero de paginas:\n").strip())
-
-    """Ask name of the file to be exported"""
-    name_file = input("Ingresa el nombre del archivo a exportar:\n").strip()
 
     """Number of pages"""
     items_url = getItemsUrl(n, url)
@@ -116,25 +141,43 @@ def startProcessChoiseOne():
     """Export Information (specify name)"""
     exportProductsData(itemsDictionary, name_file)
 
-def startProcessChoiseTwo():
+def startProcessChoiceTwo(name_file):
+    """Ask for codes"""
     print("Ingresa la lista de códigos:\n")
-    code = stdin.readline().strip()
-    while code != "":
-        
-        phoneNumber = stdin.readline().strip()
+    codes = []
+    input_code = stdin.readline().strip()
+    while input_code != "":
+        codes.append(input_code)
+        input_code = stdin.readline().strip()
+
+    print("\nPor favor espera, esto puede tardar unos minutos...\n\n")
+
+    """Obtain Google images page result"""
+    browser.get("https://www.google.com.co/imghp?hl=es-419&tab=wi&ogbl")
+
+    """Get all images information"""
+    imagesDictionary = getCodeImages(codes)
+
+    #"""Export Information (specify name)"""
+    #exportImagesData(imagesDictionary, name_file)
 
 def main():
     """Show menu"""
-    choise = -1
-    while choise != 0:
+    choice = -1
+    while choice != 0:
         printMenu()
 
-        choise = int(input("\nElige la opción: ").strip())
+        """Ask choice"""
+        choice = int(input("\nElige la opción: ").strip())
 
-        if choise == 1:
-            startProcessChoiseOne()
-        else if choise == 2:
-            startProcessChoiseTwo()
+        if choice != 0:
+            """Ask name of the file to be exported"""
+            name_file = input("\nIngresa el nombre del archivo a exportar:\n").strip()
+
+        if choice == 1:
+            startProcessChoiceOne(name_file)
+        elif choice == 2:
+            startProcessChoiceTwo(name_file)
 
     browser.quit()
 
