@@ -2,6 +2,8 @@ from sys import stdin
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from pandas import DataFrame
+from bs4 import BeautifulSoup
+import json
 
 browser = webdriver.Chrome(".\\executables\\chromedriver_win32\\chromedriver.exe")
 
@@ -84,12 +86,17 @@ def getItemsInformation(urls):
 
     return items
 
-def exportProductsData(items, name_file):
+def exportProductsData(items, exportImagesData):
     df = DataFrame(items, columns= ['name', 'sku', 'size', 'description', 'img_url'])
 
     export_excel = df.to_excel(r'.\\exported_files\\' + name_file + '.xlsx', index=None, header=True)
 
     print(df)
+
+def exportImagesData(imagesData, name_file):
+    df = DataFrame(imagesData, columns=['code', 'image_url'])
+
+    export_excel = df.to_excel(r'.\\exported_files\\' + name_file + '.xlsx', index=None, header=True)
 
 def getImageURL(code):
     res = ""
@@ -98,13 +105,22 @@ def getImageURL(code):
     searchBar.send_keys(code)
     searchBar.submit()
 
-    linkToImage = browser.find_elements_by_xpath("//div[@data-ri='0']/div")
-    if len(linkToImage) > 0:
-        linkToImage = linkToImage[0].get_attribute('class')
-        print("JSON meta image -> " + linkToImage)
-    else:
-        res = "null"
+    linkToImage = browser.find_elements_by_xpath("//div[@data-ri='0']/div")[last()]
 
+    print(linkToImage)
+
+    #linkToImage = browser.find_elements_by_xpath("//div[@data-ri='0']/a[1]")
+    #if len(linkToImage) > 0:
+    #    linkToImage = linkToImage[0].get_attribute('href')
+
+    #    browser.get(linkToImage)
+
+    #    """Extract URL"""
+    #    res = browser.find_elements_by_xpath("//div[@id='irc_cc']/div[2]/div[1]/div[2]/div[1]/a/img")[0]
+    #    print(res.get_attribute("class"))
+    #    res = res.get_attribute("src")
+    #else:
+    #    res = "null"
     return res
 
 def getCodeImages(codes):
@@ -114,8 +130,12 @@ def getCodeImages(codes):
     }
 
     for c in codes:
+        print("code -> " + c)
         imagesData['code'] = c
         imagesData['image_url'].append(getImageURL(c))
+
+        """Obtain again Google images page result"""
+        browser.get("https://www.google.com.co/imghp?hl=es-419&tab=wi&ogbl")
 
     return imagesData
 
