@@ -1,9 +1,10 @@
 from sys import stdin
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from pandas import DataFrame
-from bs4 import BeautifulSoup
-import json
 
 browser = webdriver.Chrome(".\\executables\\chromedriver_win32\\chromedriver.exe")
 
@@ -105,22 +106,24 @@ def getImageURL(code):
     searchBar.send_keys(code)
     searchBar.submit()
 
-    linkToImage = browser.find_elements_by_xpath("//div[@data-ri='0']/div")[last()]
+    linkToImage = browser.find_elements_by_xpath("//div[@data-ri='0']/a[1]")
+    if len(linkToImage) > 0:
+        linkToImage = linkToImage[0].get_attribute('href')
 
-    print(linkToImage)
+        browser.get(linkToImage)
 
-    #linkToImage = browser.find_elements_by_xpath("//div[@data-ri='0']/a[1]")
-    #if len(linkToImage) > 0:
-    #    linkToImage = linkToImage[0].get_attribute('href')
+        try:
+            WebDriverWait(browser, 10).until(EC.title_contains("Resultado"))
 
-    #    browser.get(linkToImage)
+            """Extract URL"""
+            res = browser.find_elements_by_xpath("//div[@id='irc_cc']/div[2]/div[1]/div[2]/div[1]/a/img")[0]
+            print(res.get_attribute("src"))
+        except TimeoutException:
+            print("Loading code " + code + " took too much time!")
+            res = "None"
+    else:
+        res = "null"
 
-    #    """Extract URL"""
-    #    res = browser.find_elements_by_xpath("//div[@id='irc_cc']/div[2]/div[1]/div[2]/div[1]/a/img")[0]
-    #    print(res.get_attribute("class"))
-    #    res = res.get_attribute("src")
-    #else:
-    #    res = "null"
     return res
 
 def getCodeImages(codes):
