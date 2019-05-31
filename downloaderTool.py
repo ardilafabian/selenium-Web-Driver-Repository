@@ -89,15 +89,13 @@ def getItemsInformation(urls):
 
 def exportProductsData(items, exportImagesData):
     df = DataFrame(items, columns= ['name', 'sku', 'size', 'description', 'img_url'])
-
     export_excel = df.to_excel(r'.\\exported_files\\' + name_file + '.xlsx', index=None, header=True)
-
-    print(df)
+    print("\nArchivo " + name_file + " generado.\n")
 
 def exportImagesData(imagesData, name_file):
     df = DataFrame(imagesData, columns=['code', 'image_url'])
-
     export_excel = df.to_excel(r'.\\exported_files\\' + name_file + '.xlsx', index=None, header=True)
+    print("\nArchivo " + name_file + " generado.\n")
 
 def getImageURL(code):
     res = ""
@@ -113,11 +111,14 @@ def getImageURL(code):
         browser.get(linkToImage)
 
         try:
-            WebDriverWait(browser, 15).until(EC.title_contains("Result"))
+            WebDriverWait(browser, 10).until(EC.title_contains("Result"))
 
             """Extract URL"""
-            res = browser.find_elements_by_xpath("//div[@id='irc_cc']/div[2]/div[1]/div[2]/div[1]/a/img")[0]
-            res = res.get_attribute("src")
+            res = browser.find_elements_by_xpath("//div[@id='irc_cc']/div[2]/div[1]/div[2]/div[1]/a/img")
+            if len(res) > 0:
+                res = res[0].get_attribute("src")
+            else:
+                res = "null"
         except TimeoutException:
             """Raise when internet take too much to load the page"""
             print("Loading code " + code + " took too much time!")
@@ -136,7 +137,7 @@ def getCodeImages(codes):
 
     for c in codes:
         print("code -> " + c)
-        imagesData['code'] = c
+        imagesData['code'].apppend(c)
         imagesData['image_url'].append(getImageURL(c))
 
         """Obtain again Google images page result"""
@@ -206,5 +207,4 @@ def main():
 
     browser.quit()
 
-    print("¡Terminado!")
 main()
