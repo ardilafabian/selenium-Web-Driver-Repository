@@ -113,15 +113,17 @@ def getImageURL(code):
         browser.get(linkToImage)
 
         try:
-            WebDriverWait(browser, 10).until(EC.title_contains("Resultado"))
+            WebDriverWait(browser, 15).until(EC.title_contains("Result"))
 
             """Extract URL"""
             res = browser.find_elements_by_xpath("//div[@id='irc_cc']/div[2]/div[1]/div[2]/div[1]/a/img")[0]
-            print(res.get_attribute("src"))
+            res = res.get_attribute("src")
         except TimeoutException:
+            """Raise when internet take too much to load the page"""
             print("Loading code " + code + " took too much time!")
             res = "None"
     else:
+        """Happens when there is no result for the search"""
         res = "null"
 
     return res
@@ -181,8 +183,8 @@ def startProcessChoiceTwo(name_file):
     """Get all images information"""
     imagesDictionary = getCodeImages(codes)
 
-    #"""Export Information (specify name)"""
-    #exportImagesData(imagesDictionary, name_file)
+    """Export Information (specify name)"""
+    exportImagesData(imagesDictionary, name_file)
 
 def main():
     """Show menu"""
