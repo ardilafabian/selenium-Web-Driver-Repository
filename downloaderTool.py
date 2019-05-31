@@ -109,25 +109,27 @@ def getImageURL(code):
     if len(linkToImage) > 0:
         linkToImage = linkToImage[0].get_attribute('href')
 
+        i=0
+        while linkToImage[-4:] == ".0.#" and i < 1000:
+            linkToImage = browser.find_elements_by_xpath("//div[@data-ri='0']/a[1]")
+            if len(linkToImage) > 0:
+                linkToImage = linkToImage[0].get_attribute('href')
+            else:
+                linkToImage = ".0.#"
+            i += 1
+
         print("link to Extract URL: " + linkToImage)
 
         browser.get(linkToImage)
-
-        #To Fix - Esta generando fallos el hecho de realizar la espera, el primero funciona
-        #pero depsues deja de funcionar
-        #try:
-        #    WebDriverWait(browser, 10).until(EC.title_contains("Result"))
 
         """Extract URL"""
         res = browser.find_elements_by_xpath("//div[@id='irc_cc']/div[2]/div[1]/div[2]/div[1]/a/img")
         if len(res) > 0:
             res = res[0].get_attribute("src")
+            if res == "":
+                res = linkToImage
         else:
             res = "null"
-        #except TimeoutException:
-        #    """Raise when internet take too much to load the page"""
-        #    print("Loading code " + code + " took too much time!")
-        #    res = "None"
     else:
         """Happens when there is no result for the search"""
         res = "null"
