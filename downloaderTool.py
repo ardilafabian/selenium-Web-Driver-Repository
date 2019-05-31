@@ -7,6 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from pandas import DataFrame
 
 browser = webdriver.Chrome(".\\executables\\chromedriver_win32\\chromedriver.exe")
+browser.implicitly_wait(15)
 
 def getItemsUrl(numPages, url_provided):
     j=1
@@ -90,12 +91,12 @@ def getItemsInformation(urls):
 def exportProductsData(items, exportImagesData):
     df = DataFrame(items, columns= ['name', 'sku', 'size', 'description', 'img_url'])
     export_excel = df.to_excel(r'.\\exported_files\\' + name_file + '.xlsx', index=None, header=True)
-    print("\nArchivo " + name_file + " generado.\n")
+    print("\nArchivo " + name_file + ".xlsx generado.\n")
 
 def exportImagesData(imagesData, name_file):
     df = DataFrame(imagesData, columns=['code', 'image_url'])
     export_excel = df.to_excel(r'.\\exported_files\\' + name_file + '.xlsx', index=None, header=True)
-    print("\nArchivo " + name_file + " generado.\n")
+    print("\nArchivo " + name_file + ".xlsx generado.\n")
 
 def getImageURL(code):
     res = ""
@@ -108,21 +109,25 @@ def getImageURL(code):
     if len(linkToImage) > 0:
         linkToImage = linkToImage[0].get_attribute('href')
 
+        print("link to Extract URL: " + linkToImage)
+
         browser.get(linkToImage)
 
-        try:
-            WebDriverWait(browser, 10).until(EC.title_contains("Result"))
+        #To Fix - Esta generando fallos el hecho de realizar la espera, el primero funciona
+        #pero depsues deja de funcionar
+        #try:
+        #    WebDriverWait(browser, 10).until(EC.title_contains("Result"))
 
-            """Extract URL"""
-            res = browser.find_elements_by_xpath("//div[@id='irc_cc']/div[2]/div[1]/div[2]/div[1]/a/img")
-            if len(res) > 0:
-                res = res[0].get_attribute("src")
-            else:
-                res = "null"
-        except TimeoutException:
-            """Raise when internet take too much to load the page"""
-            print("Loading code " + code + " took too much time!")
-            res = "None"
+        """Extract URL"""
+        res = browser.find_elements_by_xpath("//div[@id='irc_cc']/div[2]/div[1]/div[2]/div[1]/a/img")
+        if len(res) > 0:
+            res = res[0].get_attribute("src")
+        else:
+            res = "null"
+        #except TimeoutException:
+        #    """Raise when internet take too much to load the page"""
+        #    print("Loading code " + code + " took too much time!")
+        #    res = "None"
     else:
         """Happens when there is no result for the search"""
         res = "null"
@@ -137,7 +142,7 @@ def getCodeImages(codes):
 
     for c in codes:
         print("code -> " + c)
-        imagesData['code'].apppend(c)
+        imagesData['code'].append(c)
         imagesData['image_url'].append(getImageURL(c))
 
         """Obtain again Google images page result"""
