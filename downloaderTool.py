@@ -110,7 +110,7 @@ def getImageURL(code):
         linkToImage = linkToImage[0].get_attribute('href')
 
         i=0
-        while linkToImage[-4:] == ".0.#" and i < 1000:
+        while linkToImage[-4:] == ".0.#" and i < 10000:
             linkToImage = browser.find_elements_by_xpath("//div[@data-ri='0']/a[1]")
             if len(linkToImage) > 0:
                 linkToImage = linkToImage[0].get_attribute('href')
