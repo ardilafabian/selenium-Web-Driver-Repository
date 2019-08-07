@@ -1,0 +1,6 @@
+MacBook
+--------------
+(This versions affect the ChromeDriver excution)
+Chrome 75.x.x.x
+Chrome 76.x.x.x
+Chrome 77.x.x.x
