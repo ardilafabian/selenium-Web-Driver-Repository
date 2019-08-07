@@ -6,7 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pandas import DataFrame
 
-browser = webdriver.Chrome(".\\executables\\chromedriver_win32\\chromedriver.exe")
+browser = webdriver.Chrome(".\\chromeDriverExec\\ver75-0-3770-140\\chromedriver.exe")
 browser.implicitly_wait(15)
 
 def getItemsUrl(numPages, url_provided):
