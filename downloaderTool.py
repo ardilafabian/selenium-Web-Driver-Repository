@@ -6,7 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pandas import DataFrame
 
-browser = webdriver.Chrome(".\\executables\\chromedriver_win32\\chromedriver.exe")
+browser = webdriver.Chrome("./chromeDriverExec/ver76-0-3809-68/chromedriver")
 browser.implicitly_wait(15)
 
 def getItemsUrl(numPages, url_provided):
@@ -88,14 +88,14 @@ def getItemsInformation(urls):
 
     return items
 
-def exportProductsData(items, exportImagesData):
+def exportProductsData(items, name_file):
     df = DataFrame(items, columns= ['name', 'sku', 'size', 'description', 'img_url'])
-    export_excel = df.to_excel(r'.\\exported_files\\' + name_file + '.xlsx', index=None, header=True)
+    export_excel = df.to_excel(r'./exported_files/' + name_file + '.xlsx', index=None, header=True)
     print("\nArchivo " + name_file + ".xlsx generado.\n")
 
 def exportImagesData(imagesData, name_file):
     df = DataFrame(imagesData, columns=['code', 'image_url'])
-    export_excel = df.to_excel(r'.\\exported_files\\' + name_file + '.xlsx', index=None, header=True)
+    export_excel = df.to_excel(r'./exported_files/' + name_file + '.xlsx', index=None, header=True)
     print("\nArchivo " + name_file + ".xlsx generado.\n")
 
 def getImageURL(code):
