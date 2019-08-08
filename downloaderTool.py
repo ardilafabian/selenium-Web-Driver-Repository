@@ -88,7 +88,7 @@ def getItemsInformation(urls):
 
     return items
 
-def exportProductsData(items, exportImagesData):
+def exportProductsData(items, name_file):
     df = DataFrame(items, columns= ['name', 'sku', 'size', 'description', 'img_url'])
     export_excel = df.to_excel(r'.\\exported_files\\' + name_file + '.xlsx', index=None, header=True)
     print("\nArchivo " + name_file + ".xlsx generado.\n")
