@@ -6,7 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pandas import DataFrame
 
-browser = webdriver.Chrome("./chromeDriverExec/ver75-0-3770-140/chromedriver")
+browser = webdriver.Chrome("./chromeDriverExec/ver76-0-3809-68/chromedriver")
 browser.implicitly_wait(15)
 
 def getItemsUrl(numPages, url_provided):
@@ -106,6 +106,7 @@ def getImageURL(code):
     searchBar.submit()
 
     linkToImage = browser.find_elements_by_xpath("//div[@data-ri='0']/a[1]")
+
     if len(linkToImage) > 0:
         linkToImage = linkToImage[0].get_attribute('href')
 
@@ -123,7 +124,8 @@ def getImageURL(code):
         browser.get(linkToImage)
 
         """Extract URL"""
-        res = browser.find_elements_by_xpath("//div[@id='irc_cc']/div[2]/div[1]/div[2]/div[1]/a/img")
+        res = browser.find_elements_by_xpath("//div[@id='irc_cc']/div/div[2]/div[1]/div[2]/div[1]/a/div/img")
+
         if len(res) > 0:
             res = res[0].get_attribute("src")
             if res == "":
@@ -148,7 +150,7 @@ def getCodeImages(codes):
         imagesData['image_url'].append(getImageURL(c))
 
         """Obtain again Google images page result"""
-        browser.get("https://www.google.com.co/imghp?hl=es-419&tab=wi&ogbl")
+        browser.get("https://www.google.com/imghp?hl=es")
 
     return imagesData
 
