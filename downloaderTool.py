@@ -1,13 +1,12 @@
 from sys import stdin
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, StaleElementReferenceException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pandas import DataFrame
 
-browser = webdriver.Chrome("./chromeDriverExec/ver76-0-3809-68/chromedriver")
-browser.implicitly_wait(15)
+browser = webdriver.Chrome("./chromeDriverExec/ver77-0-3865-10/chromedriver")
 
 def getItemsUrl(numPages, url_provided):
     j=1
@@ -105,35 +104,32 @@ def getImageURL(code):
     searchBar.send_keys(code)
     searchBar.submit()
 
-    linkToImage = browser.find_elements_by_xpath("//div[@data-ri='0']/a[1]")
+    try:
+        #Main image showed in the initial search of google images
+        element = WebDriverWait(browser, 30).until(
+            #EC.element_to_be_clickable((By.XPATH, "//div[@data-ri='0']/a[1]"))
+            EC.element_to_be_clickable((By.XPATH, "//*[@id='rg_s']/div[1]/a[1]"))
+        )
+        print("-----------------")
+        print(element)
+        print("-----------------")
+        href = element.get_attribute("href")
+        print("URL ->")
+        print(href)
+        if isinstance(href, str):
 
-    if len(linkToImage) > 0:
-        linkToImage = linkToImage[0].get_attribute('href')
+            browser.get(href)
 
-        i=0
-        while linkToImage[-4:] == ".0.#" and i < 10000:
-            linkToImage = browser.find_elements_by_xpath("//div[@data-ri='0']/a[1]")
-            if len(linkToImage) > 0:
-                linkToImage = linkToImage[0].get_attribute('href')
-            else:
-                linkToImage = ".0.#"
-            i += 1
+            image = WebDriverWait(browser, 30).until(
+                EC.element_to_be_clickable((By.XPATH, "//div[@id='irc_cc']/div/div[2]/div[1]/div[2]/div[1]/a/div/img"))
+            )
 
-        print("link to Extract URL: " + linkToImage)
-
-        browser.get(linkToImage)
-
-        """Extract URL"""
-        res = browser.find_elements_by_xpath("//div[@id='irc_cc']/div/div[2]/div[1]/div[2]/div[1]/a/div/img")
-
-        if len(res) > 0:
-            res = res[0].get_attribute("src")
-            if res == "":
-                res = linkToImage
+            res = image.get_attribute("src")
         else:
             res = "null"
-    else:
-        """Happens when there is no result for the search"""
+        print(res)
+    except (StaleElementReferenceException, TimeoutException) as e:
+        print("It fails")
         res = "null"
 
     return res
@@ -145,7 +141,7 @@ def getCodeImages(codes):
     }
 
     for c in codes:
-        print("code -> " + c)
+        print("\ncode -> " + c)
         imagesData['code'].append(c)
         imagesData['image_url'].append(getImageURL(c))
 
