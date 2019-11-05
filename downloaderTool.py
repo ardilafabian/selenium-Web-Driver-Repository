@@ -111,9 +111,26 @@ def getImageURL(code):
         )
 
         href = element.get_attribute("href")
-        print("URL ->")
+
+        print("\nURL ->")
         print(href)
-        if isinstance(href, str):
+
+        #Verify if URL is valid and refresh page in case the URL is not valid
+        if href[-13:] == "gws-wiz-img.#":
+            print("Try search one more time...")
+            browser.refresh()
+
+            element = WebDriverWait(browser, 30).until(
+                EC.element_to_be_clickable((By.XPATH, "//*[@id='rg_s']/div[1]/a[1]"))
+            )
+
+            href = element.get_attribute("href")
+
+        print("\nURL ->")
+        print(href)
+
+        #Only check if the URL is valid
+        if isinstance(href, str) and href[-13:] != "gws-wiz-img.#":
 
             browser.get(href)
 
@@ -138,7 +155,8 @@ def getCodeImages(codes):
     }
 
     for c in codes:
-        print("\ncode -> " + c)
+        print("\n//------------------------//")
+        print("code -> " + c)
         imagesData['code'].append(c)
         imagesData['image_url'].append(getImageURL(c))
 
