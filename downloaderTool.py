@@ -107,12 +107,9 @@ def getImageURL(code):
     try:
         #Main image showed in the initial search of google images
         element = WebDriverWait(browser, 30).until(
-            #EC.element_to_be_clickable((By.XPATH, "//div[@data-ri='0']/a[1]"))
             EC.element_to_be_clickable((By.XPATH, "//*[@id='rg_s']/div[1]/a[1]"))
         )
-        print("-----------------")
-        print(element)
-        print("-----------------")
+
         href = element.get_attribute("href")
         print("URL ->")
         print(href)
@@ -129,7 +126,7 @@ def getImageURL(code):
             res = "null"
         print(res)
     except (StaleElementReferenceException, TimeoutException) as e:
-        print("It fails")
+        print("It failed.")
         res = "null"
 
     return res
