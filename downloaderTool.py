@@ -35,7 +35,7 @@ def getItemInfo(url):
         "img_url":"",
     }
 
-    """Validate Name if have size in it"""
+    #Validate Name if have size in it
     name = browser.find_elements_by_xpath("//div[@class='content-area']/div/div[2]/div[2]/h1")[0].text
     res = name.find("*")
     if res != -1:
@@ -45,21 +45,21 @@ def getItemInfo(url):
         info['name'] = name
         info['size'] = "null"
 
-    """Find sku"""
+    #Find sku
     sku = browser.find_elements_by_xpath("//div[@class='sku_wrapper']/span")
     if len(sku) > 0:
         info['sku'] = sku[0].text
     else:
         info['sku'] = 'null'
 
-    """Find description"""
+    #Find description
     description = browser.find_elements_by_xpath("//div[@id='tab-description']/p")
     if len(description) > 0:
         info['description'] = description[0].text
     else:
         info['description'] = 'null'
 
-    """find image url"""
+    #find image url
     img_url = browser.find_elements_by_xpath("//div[@class='content-area']/div/div[2]/div[1]/div/a/img")
     if len(img_url) > 0:
         info['img_url'] = img_url[0].get_attribute('src')
@@ -160,7 +160,7 @@ def getCodeImages(codes):
         imagesData['code'].append(c)
         imagesData['image_url'].append(getImageURL(c))
 
-        """Obtain again Google images page result"""
+        #Obtain again Google images page result
         browser.get("https://www.google.com/imghp?hl=es")
 
     return imagesData
@@ -172,23 +172,23 @@ def printMenu():
     print("\r0. Salir")
 
 def startProcessChoiceOne(name_file):
-    """Ask URL to the User"""
+    #Ask URL to the User
     url = input("\nIngresa la URL:\n").strip()
 
-    """Ask number of pages to the User"""
+    #Ask number of pages to the User
     n = int(input("Ingresa numero de paginas:\n").strip())
 
-    """Number of pages"""
+    #Number of pages
     items_url = getItemsUrl(n, url)
 
-    """Get all the products information"""
+    #Get all the products information
     itemsDictionary = getItemsInformation(items_url)
 
-    """Export Information (specify name)"""
+    #Export Information (specify name)
     exportProductsData(itemsDictionary, name_file)
 
 def startProcessChoiceTwo(name_file):
-    """Ask for codes"""
+    #Ask for codes
     print("Ingresa la lista de códigos:\n")
     codes = []
     input_code = stdin.readline().strip()
@@ -198,26 +198,26 @@ def startProcessChoiceTwo(name_file):
 
     print("\nPor favor espera, esto puede tardar unos minutos...\n\n")
 
-    """Obtain Google images page result"""
+    #Obtain Google images page result
     browser.get("https://www.google.com.co/imghp?hl=es-419&tab=wi&ogbl")
 
-    """Get all images information"""
+    #Get all images information
     imagesDictionary = getCodeImages(codes)
 
-    """Export Information (specify name)"""
+    #Export Information (specify name)
     exportImagesData(imagesDictionary, name_file)
 
 def main():
-    """Show menu"""
+    #Show menu
     choice = -1
     while choice != 0:
         printMenu()
 
-        """Ask choice"""
+        #Ask choice
         choice = int(input("\nElige la opción: ").strip())
 
         if choice != 0:
-            """Ask name of the file to be exported"""
+            #Ask name of the file to be exported
             name_file = input("\nIngresa el nombre del archivo a exportar:\n").strip()
 
         if choice == 1:
