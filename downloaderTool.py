@@ -251,7 +251,7 @@ def main():
 
         if choice != 0:
             #Ask name of the file to be exported
-            name_file = input("\nIngresa el nombre del archivo a exportar:\n").strip()
+            name_file = input("\nIngresa el nombre del archivo a exportar:\n").strip().replace(" ", "_")
 
         if choice == 1:
             startProcessChoiceOne(name_file)
