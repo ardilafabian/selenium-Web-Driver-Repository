@@ -93,9 +93,9 @@ def exportProductsData(items, name_file):
     export_excel = df.to_excel(r'./exported_files/' + name_file + '.xlsx', index=None, header=True)
     print("\nArchivo " + name_file + ".xlsx generado.\n")
 
-def exportImagesData(imagesData, name_file):
+def exportImagesData(imagesData, dirname, name_file):
     df = DataFrame(imagesData, columns=['code', 'image_url'])
-    export_excel = df.to_excel(r'./exported_files/' + name_file + '.xlsx', index=None, header=True)
+    export_excel = df.to_excel(r'./{dirname}/{name_file}.xlsx'.format(dirname=dirname, name_file=name_file), index=None, header=True)
     print("\nArchivo " + name_file + ".xlsx generado.\n")
 
 def getImageURL(code):
@@ -214,6 +214,9 @@ def download_images(dirname, img_dictionary):
             del response
 
 def startProcessChoiceTwo(name_file):
+    dir_excel_name = 'exported_files/' + name_file
+    dir_images_name = 'exported_files/' + name_file + "/images"
+
     #Ask for codes
     print("Ingresa la lista de códigos:\n")
     codes = []
@@ -230,15 +233,14 @@ def startProcessChoiceTwo(name_file):
     #Get all images information
     imagesDictionary = getCodeImages(codes)
 
-    #Export Information (specify name)
-    exportImagesData(imagesDictionary, name_file)
-
     #Create directory for images
-    dirname = 'exported_files/' + name_file
-    make_dir(dirname)
+    make_dir(dir_images_name)
+
+    #Export Information (specify name)
+    exportImagesData(imagesDictionary, dir_excel_name, name_file)
 
     #Download images
-    download_images(dirname, imagesDictionary)
+    download_images(dir_images_name, imagesDictionary)
 
 def main():
     #Show menu
