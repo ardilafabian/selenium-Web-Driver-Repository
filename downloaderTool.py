@@ -118,7 +118,7 @@ def getImageURL(code):
 
         #Verify if URL is valid and refresh page in case the URL is not valid
         if href[-13:] == "gws-wiz-img.#":
-            print("Try search one more time...")
+            print("Intenta búsqueda una vez más...")
             browser.refresh()
 
             element = WebDriverWait(browser, 30).until(
@@ -144,7 +144,7 @@ def getImageURL(code):
             res = "null"
         print(res)
     except (StaleElementReferenceException, TimeoutException) as e:
-        print("It failed.")
+        print("Falló.")
         res = "null"
 
     return res
@@ -157,7 +157,7 @@ def getCodeImages(codes):
 
     for c in codes:
         print("\n//------------------------//")
-        print("code -> " + c)
+        print("código -> " + c)
         imagesData['code'].append(c)
 
         #Go to find the URL of the image
@@ -206,7 +206,7 @@ def download_images(dirname, img_dictionary):
     codes = img_dictionary['code']
     length = len(links)
     for index, link in enumerate(links):
-        print('Downloading {0} of {1} images. (Code: {2})'.format(index + 1, length, codes[index]))
+        print('Descargando {0} de {1} imágenes. (Código: {2})'.format(index + 1, length, codes[index]))
         if link != "null":
             response = requests.get(link, stream=True)
             img_name = codes[index].replace(" ", "_")
