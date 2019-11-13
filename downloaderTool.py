@@ -5,7 +5,7 @@ from selenium.common.exceptions import TimeoutException, StaleElementReferenceEx
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pandas import DataFrame
-import requests, shutil
+import requests, shutil, os
 
 browser = webdriver.Chrome("./chromeDriverExec/ver77-0-3865-10/chromedriver")
 
@@ -149,15 +149,6 @@ def getImageURL(code):
 
     return res
 
-def save_image_to_file(image):
-    with open(r'./exported_files/test.png', 'wb') as out_file:
-        shutil.copyfileobj(image.raw, out_file)
-
-def downloadImage(image_url):
-    response = requests.get(image_url, stream=True)
-    save_image_to_file(response)
-    del response
-
 def getCodeImages(codes):
     imagesData = {
         "code" : [],
@@ -172,10 +163,6 @@ def getCodeImages(codes):
         #Go to find the URL of the image
         image_url = getImageURL(c)
         imagesData['image_url'].append(image_url)
-
-        #Go to download image
-        if image_url != "null":
-            downloadImage(image_url)
 
         #Obtain again Google images page result
         browser.get("https://www.google.com/imghp?hl=es")
@@ -204,6 +191,28 @@ def startProcessChoiceOne(name_file):
     #Export Information (specify name)
     exportProductsData(itemsDictionary, name_file)
 
+def make_dir(dirname):
+    current_path = os.getcwd()
+    path = os.path.join(current_path, dirname)
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+def save_image_to_file(image, dirname, img_name):
+    with open(r'./{dirname}/{img_name}.png'.format(dirname=dirname, img_name=img_name), 'wb') as out_file:
+        shutil.copyfileobj(image.raw, out_file)
+
+def download_images(dirname, img_dictionary):
+    links = img_dictionary['image_url']
+    codes = img_dictionary['code']
+    length = len(links)
+    for index, link in enumerate(links):
+        print('Downloading {0} of {1} images'.format(index + 1, length))
+        if link != "null":
+            response = requests.get(link, stream=True)
+            img_name = codes[index].replace(" ", ",")
+            save_image_to_file(response, dirname, img_name)
+            del response
+
 def startProcessChoiceTwo(name_file):
     #Ask for codes
     print("Ingresa la lista de códigos:\n")
@@ -223,6 +232,13 @@ def startProcessChoiceTwo(name_file):
 
     #Export Information (specify name)
     exportImagesData(imagesDictionary, name_file)
+
+    #Create directory for images
+    dirname = 'exported_files/' + name_file
+    make_dir(dirname)
+
+    #Download images
+    download_images(dirname, imagesDictionary)
 
 def main():
     #Show menu
