@@ -206,10 +206,10 @@ def download_images(dirname, img_dictionary):
     codes = img_dictionary['code']
     length = len(links)
     for index, link in enumerate(links):
-        print('Downloading {0} of {1} images'.format(index + 1, length))
+        print('Downloading {0} of {1} images. (Code: {2})'.format(index + 1, length, codes[index]))
         if link != "null":
             response = requests.get(link, stream=True)
-            img_name = codes[index].replace(" ", ",")
+            img_name = codes[index].replace(" ", "_")
             save_image_to_file(response, dirname, img_name)
             del response
 
