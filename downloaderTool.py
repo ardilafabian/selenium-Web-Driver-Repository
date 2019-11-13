@@ -5,6 +5,7 @@ from selenium.common.exceptions import TimeoutException, StaleElementReferenceEx
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pandas import DataFrame
+import requests, shutil
 
 browser = webdriver.Chrome("./chromeDriverExec/ver77-0-3865-10/chromedriver")
 
@@ -148,6 +149,15 @@ def getImageURL(code):
 
     return res
 
+def save_image_to_file(image):
+    with open(r'./exported_files/test.png', 'wb') as out_file:
+        shutil.copyfileobj(image.raw, out_file)
+
+def downloadImage(image_url):
+    response = requests.get(image_url, stream=True)
+    save_image_to_file(response)
+    del response
+
 def getCodeImages(codes):
     imagesData = {
         "code" : [],
@@ -158,7 +168,14 @@ def getCodeImages(codes):
         print("\n//------------------------//")
         print("code -> " + c)
         imagesData['code'].append(c)
-        imagesData['image_url'].append(getImageURL(c))
+
+        #Go to find the URL of the image
+        image_url = getImageURL(c)
+        imagesData['image_url'].append(image_url)
+
+        #Go to download image
+        if image_url != "null":
+            downloadImage(image_url)
 
         #Obtain again Google images page result
         browser.get("https://www.google.com/imghp?hl=es")
