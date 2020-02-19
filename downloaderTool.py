@@ -7,7 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from pandas import DataFrame
 import requests, shutil, os
 
-browser = webdriver.Chrome("./chromeDriverExec/ver77-0-3865-10/chromedriver")
+browser = webdriver.Chrome("./chromeDriverExec/ver79-0-3945-36/chromedriver")
 
 def getItemsUrl(numPages, url_provided):
     j=1
