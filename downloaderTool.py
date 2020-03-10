@@ -117,7 +117,7 @@ def getImageURL(code):
         print(href)
 
         #Verify if URL is valid and refresh page in case the URL is not valid
-        if href[-13:] == "gws-wiz-img.#":
+        if "gws-wiz-img" in href:
             print("Intenta búsqueda una vez más...")
             browser.refresh()
 
@@ -131,7 +131,7 @@ def getImageURL(code):
         print(href)
 
         #Only check if the URL is valid
-        if isinstance(href, str) and href[-13:] != "gws-wiz-img.#":
+        if isinstance(href, str) and "gws-wiz-img" not in href:
 
             browser.get(href)
 
