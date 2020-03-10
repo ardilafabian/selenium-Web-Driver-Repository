@@ -8,6 +8,7 @@ from pandas import DataFrame
 import requests, shutil, os
 
 browser = webdriver.Chrome("./chromeDriverExec/ver79-0-3945-36/chromedriver")
+images_types = [".jpeg", ".jpg", ".png"]
 
 def getItemsUrl(numPages, url_provided):
     j=1
@@ -98,7 +99,26 @@ def exportImagesData(imagesData, dirname, name_file):
     export_excel = df.to_excel(r'./{dirname}/{name_file}.xlsx'.format(dirname=dirname, name_file=name_file), index=None, header=True)
     print("\nArchivo " + name_file + ".xlsx generado.\n")
 
+def validImage(url):
+    valid_image = False
+    for i in images_types:
+        if i in url:
+            valid_image = True
+    return valid_image
+
+def fixUrl(url):
+    for i in images_types:
+        if i in url:
+            if url.find(i) + len(i) == len(url):
+                return url
+            else:
+                return url[:url.find(i)+len(i)]
+
 def getImageURL(code):
+    """
+    This function only retrieve the URL of the image and now is possible to retrieve
+    it in the same page.
+    """
     res = ""
 
     searchBar = browser.find_element_by_name("q")
@@ -107,44 +127,41 @@ def getImageURL(code):
 
     try:
         #Main image showed in the initial search of google images
-        element = WebDriverWait(browser, 30).until(
-            EC.element_to_be_clickable((By.XPATH, "//*[@id='rg_s']/div[1]/a[1]"))
+        mini_image = WebDriverWait(browser, 30).until(
+            EC.element_to_be_clickable((By.XPATH, "//*[@id='islrg']/div[1]/div[1]"))
         )
 
-        href = element.get_attribute("href")
+        print("Mini image element")
+        print(mini_image)
 
-        print("\nURL ->")
-        print(href)
+        # Click image to open right panel
+        mini_image.click()
 
-        #Verify if URL is valid and refresh page in case the URL is not valid
-        if "gws-wiz-img" in href:
-            print("Intenta búsqueda una vez más...")
+        # Wait until the right panel loads
+        for i in range(2):
+            i = 0
+            while True:
+                big_image = browser.find_element_by_xpath("//*[@id='Sva75c']/div/div/div[3]/div[2]/div/div[1]/div[1]/div/div[2]/a/img")
+                href = big_image.get_attribute("src")
+                print(i)
+                i += 1
+                if i>=500 or validImage(href):
+                    break
             browser.refresh()
 
-            element = WebDriverWait(browser, 30).until(
-                EC.element_to_be_clickable((By.XPATH, "//*[@id='rg_s']/div[1]/a[1]"))
-            )
+        print("Big image element")
+        print(big_image)
 
-            href = element.get_attribute("href")
+        if not validImage(href):
+            res = "null"
+            print("No tiene una URL válida.")
+        else:
+            res = fixUrl(href)
 
         print("\nURL ->")
         print(href)
-
-        #Only check if the URL is valid
-        if isinstance(href, str) and "gws-wiz-img" not in href:
-
-            browser.get(href)
-
-            image = WebDriverWait(browser, 30).until(
-                EC.element_to_be_clickable((By.XPATH, "//div[@id='irc_cc']/div/div[2]/div[1]/div[2]/div[1]/a/div/img"))
-            )
-
-            res = image.get_attribute("src")
-        else:
-            res = "null"
-        print(res)
     except (StaleElementReferenceException, TimeoutException) as e:
-        print("Falló.")
+        print("Falló. Error: " + str(e))
         res = "null"
 
     return res
